@@ -1,7 +1,0 @@
-folium
-geojson
-openrouteservice
-PyYAML
-shapely
-pointpats
-pyproj
