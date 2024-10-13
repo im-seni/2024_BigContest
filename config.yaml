@@ -3,7 +3,7 @@
 ## [R], [coordinates_only: False, fixed_origins: False]: 좌표는 이미 뽑아둔 상태에서 경로만 생성하고 싶을때 선택.
 ## [F], [coordinates_only: False, fixed_origins: True ]: 출발지를 정해놓은 상태에서 경로를 생성하고 싶을때 선택.
 coordinates_only: False
-fixed_origins: False
+fixed_origins: True
 
 ## API 액세스 토큰 [CRF]
 SGIS_consumer_key: '135b3b15a79b477a8fa8'
@@ -30,8 +30,8 @@ probability: 0.8                                          ## 목적지 도착 �
 coordinates_path: 'results/서울종로구돈화문로11가길17_D0910_T1200_P0.8/coordinates/coordinates.json'
 
 ## 지정좌표 기반 경로생성 옵션 [F]
-fixed_origins: [[1,2],[3,4],[5,6]]     ## 사용자 설정 출발지들의 경도, 위도를 담은 2차원 배열
-fixed_destination: [7,8]   ## 사용자 설정 목적지의 경도, 위도를 담은 1차원 배열
+fixed_origins: [[126.939399,37.559016],[126.933020,37.557502],[126.935102,37.554074]]     ## 사용자 설정 출발지들의 경도, 위도를 담은 2차원 배열
+fixed_destination: [126.936952, 37.557638]   ## 사용자 설정 목적지의 경도, 위도를 담은 1차원 배열
 profile: 'driving-car'  ## 'driving-car', 'driving-hgv', 'cycling-regular'
                         ## 'cycling-road', 'cycling-mountain', 'cycling-electric'
                         ## 'foot-walking', 'foot-hiking', 'wheelchair'

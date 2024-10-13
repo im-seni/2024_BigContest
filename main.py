@@ -135,11 +135,13 @@ def convert_coord(coord: list) -> list:
 
 
 def load_origins(config: dict) -> pd.DataFrame:
+    od_ct = [1]
     or_cd = config['fixed_origins']
     dt_cd = [config['fixed_destination']] * len(config['fixed_origins'])
     md = [config['profile']] * len(config['fixed_origins'])
-    od_data = pd.DataFrame(list(zip(or_cd, dt_cd, md)),
-                           columns=['origin_coordinates','destination_coordinates','modal'])
+    ct = [1] * len(config['fixed_origins'])
+    od_data = pd.DataFrame(list(zip(or_cd, dt_cd, md, ct)),
+                           columns=['origin_coordinates','destination_coordinates','modal','od_cnts'])
     return od_data
 
 
@@ -322,7 +324,10 @@ def create_paths(config, od_data):
             headers = {'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
                        'Authorization': config['ors_token'],
                        'Content-Type': 'application/json; charset=utf-8'}
-            url = os.path.join('https://api.openrouteservice.org/v2/directions', modal_dict[data['modal']])
+            if config['fixed_origins']:
+                url = os.path.join('https://api.openrouteservice.org/v2/directions', config['profile'])
+            else:
+                url = os.path.join('https://api.openrouteservice.org/v2/directions', modal_dict[data['modal']])
             response = call_api(url, body, headers)
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
@@ -384,7 +389,7 @@ def save(config, od_data):
         save_dir = os.path.join(save_dir, 'fixed_origins')
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         file_name = f'{current_time}.json'
-        columns=['origin_coordinates','destination_coordinates','modal','route']
+        columns=['origin_coordinates','destination_coordinates','modal','route', 'od_cnts']
     else:
         save_dir = os.path.join(save_dir, middle_dir, 'routes')
         file_name = f'routes_{num}_samples.json'
