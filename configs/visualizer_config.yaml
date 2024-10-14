@@ -1,0 +1,10 @@
+
+
+## 경로 json 상대경로
+json_path: 'results/서울종로구돈화문로11가길17_D0910_T1200_P0.8/routes/routes_78_samples.json'
+
+## 경로 선 굵기
+PolyLine_weight: 4
+
+## 경로 선 불투명도
+PolyLine_opacity: 1
