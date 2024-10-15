@@ -30,17 +30,17 @@ def validate_config(config):
     
     def validate_mode(config):
         coordinates_only = config.get('coordinates_only', None)
-        fixed_origins = config.get('fixed_origins', None)
-        if coordinates_only is None or fixed_origins is None:
-            print("오류: 'coordinates_only' 또는 'fixed_origins'가 누락되었습니다.")
+        fixed_origins_only = config.get('fixed_origins_only', None)
+        if coordinates_only is None or fixed_origins_only is None:
+            print("오류: 'coordinates_only' 또는 'fixed_origins_only'가 누락되었습니다.")
             return
-        if coordinates_only and fixed_origins:
-            print("오류: 'coordinates_only'와 'fixed_origins'는 동시에 True일 수 없습니다.")
+        if coordinates_only and fixed_origins_only:
+            print("오류: 'coordinates_only'와 'fixed_origins_only'는 동시에 True일 수 없습니다.")
             return
         else:
-            if coordinates_only==True and fixed_origins==False:
+            if coordinates_only==True and fixed_origins_only==False:
                 print("모드 설정이 올바릅니다: [C]")
-            elif coordinates_only==False and fixed_origins==False:
+            elif coordinates_only==False and fixed_origins_only==False:
                 print("모드 설정이 올바릅니다: [R]")
             else:
                 print("모드 설정이 올바릅니다: [F]")
@@ -324,7 +324,7 @@ def create_paths(config, od_data):
             headers = {'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
                        'Authorization': config['ors_token'],
                        'Content-Type': 'application/json; charset=utf-8'}
-            if config['fixed_origins']:
+            if config['fixed_origins_only']:
                 url = os.path.join('https://api.openrouteservice.org/v2/directions', config['profile'])
             else:
                 url = os.path.join('https://api.openrouteservice.org/v2/directions', modal_dict[data['modal']])
@@ -367,7 +367,7 @@ def collect_errors(config, od_data):
 
 def save(config, od_data):
     coordinates_only = config['coordinates_only']
-    fixed_origins = config['fixed_origins']
+    fixed_origins_only = config['fixed_origins_only']
     save_dir = config['save_directory']
     name = config['destination'].replace(" ", "")
     date = config['date']
@@ -385,7 +385,7 @@ def save(config, od_data):
         columns=['origin_hdong_cd','dest_hdong_cd','origin_coordinates',
                  'destination_coordinates','start_time','end_time','gender','age','modal',
                  'origin_purpose','dest_purpose','od_dist_avg','od_duration_avg','od_cnts']
-    elif fixed_origins:
+    elif fixed_origins_only:
         save_dir = os.path.join(save_dir, 'fixed_origins')
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         file_name = f'{current_time}.json'
