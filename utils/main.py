@@ -434,7 +434,7 @@ if __name__ == "__main__":
         print('============================================')
         print('결과 저장 중...')
         save(config, od_data)
-    elif config['fixed_origins']:
+    elif config['fixed_origins_only']:
         print('============================================')
         print('죄표 불러오는 중...')
         od_data = load_origins(config)
