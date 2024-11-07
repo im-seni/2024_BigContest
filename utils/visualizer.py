@@ -76,13 +76,6 @@ class Map():
                                      vmin=df['count'].min(),
                                      vmax=df['count'].max())
 
-        """colormap = colormap.to_step(
-            n=self.config['num_color_quantiles'],
-            data=df['count'].unique(),
-            method="quantiles",
-            round_method="int",
-            )"""
-
         for _, row in df.iterrows():
             geometry = row['geometry']
             count = row['count']

@@ -2,7 +2,7 @@
 ## [C], [coordinates_only: True,  fixed_origins: False]: 사용자 설정에 따라 출발지, 도착지 좌표 설정만 하고 싶을때 선택.
 ## [R], [coordinates_only: False, fixed_origins: False]: 좌표는 이미 뽑아둔 상태에서 경로만 생성하고 싶을때 선택.
 ## [F], [coordinates_only: False, fixed_origins: True ]: 출발지를 정해놓은 상태에서 경로를 생성하고 싶을때 선택.
-coordinates_only: False
+coordinates_only:   False
 fixed_origins_only: False
 
 ## API 액세스 토큰 [CRF]
@@ -18,20 +18,20 @@ save_directory: './results'                               ## 결과 저장용 �
 error_directory: './errors'                               ## 에러 케이스 저장용 디렉토리
 
 ## 데이터 전처리 옵션 [CR]
-date: '1005'                                              ## 검색 날짜 ('MMDD')
-destination: '경남 진주시 동진로 415'                    ## 검색 목적지 도로명주소
-view_all_day: True                                       ## 하루종일 보기 옵션
+date: '1008'                                              ## 검색 날짜 ('MMDD')
+destination: '경남 진주시 충무공동 동부로169번길 12'              ## 검색 목적지 도로명주소
+view_all_day: True                                        ## 하루종일 보기 옵션
 time: '12:00'                                             ## 특정 시간대만 보기 옵션 ('HH:MM')
 
 ## 좌표 생성 옵션 [CR]
 probability: 0.8                                          ## 목적지 도착 확률 (0~1)
 
 ## 경로생성 대상 데이터파일 지정 [R]
-coordinates_path: 'results/경남진주시동진로415_D1005_TALL_P0.8/coordinates/coordinates.json'
+coordinates_path: 'results/경남진주시충무공동동부로169번길12_D1008_TALL_P0.8/coordinates/coordinates.json'
 
 ## 지정좌표 기반 경로생성 옵션 [F]
-fixed_origins: [[126.939399,37.559016],[126.933020,37.557502],[126.935102,37.554074]]     ## 사용자 설정 출발지들의 경도, 위도를 담은 2차원 배열
-fixed_destination: [126.936952, 37.557638]   ## 사용자 설정 목적지의 경도, 위도를 담은 1차원 배열
+fixed_origins:          ## 사용자 설정 출발지들의 경도, 위도를 담은 2차원 배열
+fixed_destination:      ## 사용자 설정 목적지의 경도, 위도를 담은 1차원 배열
 profile: 'driving-car'  ## 'driving-car', 'driving-hgv', 'cycling-regular'
                         ## 'cycling-road', 'cycling-mountain', 'cycling-electric'
                         ## 'foot-walking', 'foot-hiking', 'wheelchair'

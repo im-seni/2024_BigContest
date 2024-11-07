@@ -18,17 +18,29 @@ from shapely.geometry import Polygon
 from shapely.geometry import MultiPolygon
 from ratelimit import limits, sleep_and_retry
 
+## OPEN ROUTE SERVICE 쿼리 제한을 넘지 않기 위한 글로벌 파라미터.
 ONE_MINUTE = 60
 MAX_CALLS_PER_MINUTE = 40
 
+
 def parse_args():
+    """
+    터미널 창에서 커맨드 라인을 실핼할 때 필요한 argparser를 초기화.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', type=str, required=True, help='choose config file')
     return parser.parse_args()
 
+
 def validate_config(config):
+    """
+    router_config.yaml 파일에서 설정한 모드에 필요한 인자들이 올바르게 세팅되었는지 확인.
+    """
     
     def validate_mode(config):
+        """
+        모드 설정 확인하는 내부 메소드.
+        """
         coordinates_only = config.get('coordinates_only', None)
         fixed_origins_only = config.get('fixed_origins_only', None)
         if coordinates_only is None or fixed_origins_only is None:
@@ -46,6 +58,9 @@ def validate_config(config):
                 print("모드 설정이 올바릅니다: [F]")
     
     def check_fields(required_fields):
+        """
+        설정한 모드에 필요한 인자들이 존재하는지 확인하는 내부 메소드.
+        """
         for field, field_type in required_fields.items():
             if field not in config or not isinstance(config[field], field_type):
                 print(f"오류: '{field}'가 누락되었거나 {field_type.__name__} 타입이 아닙니다.")
@@ -54,6 +69,9 @@ def validate_config(config):
                 print(f"'{field}'가 올바르게 설정되었습니다.")
 
     def validate_required_fields(config):
+        """
+        모든 모드에 공통적으로 필요한 설정값들 확인하는 내부 메소드.
+        """
         required_fields = {
             'SGIS_consumer_key': str,
             'SGIS_consumer_secret': str,
@@ -67,6 +85,9 @@ def validate_config(config):
         check_fields(required_fields)
     
     def vaidate_mode_C(config):
+        """
+        모드 C에 필요한 설정값들 확인하는 내부 메소드.
+        """
         required_fields = {
             'date': str,
             'destination': str,
@@ -77,6 +98,9 @@ def validate_config(config):
         check_fields(required_fields)
 
     def vaidate_mode_R(config):
+        """
+        모드 R에 필요한 설정값을 확인하는 내부 메소드.
+        """
         required_fields = {
             'date': str,
             'destination': str,
@@ -88,6 +112,9 @@ def validate_config(config):
         check_fields(required_fields)
 
     def vaidate_mode_F(config):
+        """
+        모드 F에 필요한 설정값을 확인하는 내부 메소드.
+        """
         required_fields = {
             'fixed_origins': list,
             'fixed_destination': list,
@@ -110,7 +137,7 @@ def validate_config(config):
 @limits(calls=MAX_CALLS_PER_MINUTE, period=ONE_MINUTE)
 def call_api(url, body, headers):
     """
-    openrouteservice API 호출할때 1분당 쿼리 40개 제한을 잘 지키자!
+    openrouteservice API 호출할 때 글로벌 파리미터로 지정된 시간 제한을 지키며 리퀘스트 실행.
     """
     response = requests.post(url, json=body, headers=headers)
     response.raise_for_status()
@@ -135,6 +162,9 @@ def convert_coord(coord: list) -> list:
 
 
 def load_origins(config: dict) -> pd.DataFrame:
+    """
+    모드 F일때만 실행. 모든 지정 출발지를 불러오고, od_count를 1로 설정.
+    """
     od_ct = [1]
     or_cd = config['fixed_origins']
     dt_cd = [config['fixed_destination']] * len(config['fixed_origins'])
@@ -185,7 +215,7 @@ def get_access_token(config: dict) -> str:
 
 def get_destination(config: dict, accessToken: str) -> tuple:
     """
-    사용자 설정 목적지의 도로명 주소를 SGIS API에 통과시켜 좌표와 행정동 코드를 받아오기.
+    사용자 설정 목적지의 도로명 주소를 SGIS API에 통과시켜 좌표와 행정동 코드 호출.
     """
     url = "https://sgisapi.kostat.go.kr/OpenAPI3/addr/geocodewgs84.json"
     params = {
@@ -228,7 +258,7 @@ def filter_data(config: dict) -> pd.DataFrame:
 
 def check_polygon(coordinates: np.array) -> Polygon:
     """
-    행정경계구역을 표시하는 좌표 데이터를 차원 수에 따라 Polygon/MultiPolygon 객체로 지정해주기.
+    행정경계구역을 표시하는 좌표 데이터를 차원 수에 따라 Polygon/MultiPolygon 객체로 지정.
     """
     if coordinates.ndim == 2:
         polygon = Polygon(coordinates)
@@ -289,6 +319,9 @@ def create_destination_coordinates(config: dict,
 
 
 def create_paths(config, od_data):
+    """
+    출발지, 도착지, 이동수단 정보를 받아 API를 거쳐 경로 생성.
+    """
     print(f"현재 데이터는 {len(od_data)}개 입니다.")
     print(f"openrouteservice의 일일 쿼리 제한은 2000 입니다.")
     while True:
@@ -353,6 +386,9 @@ def create_paths(config, od_data):
 
 
 def collect_errors(config, od_data):
+    """
+    코드 실행 중 발생하는 에러 케이스 수집.
+    """
     error_directory = config['error_directory']
     if not os.path.exists(error_directory):
         os.makedirs(error_directory)
@@ -366,6 +402,9 @@ def collect_errors(config, od_data):
 
 
 def save(config, od_data):
+    """
+    코드 실행 결과를 알맞은 디렉토리에 저장.
+    """
     coordinates_only = config['coordinates_only']
     fixed_origins_only = config['fixed_origins_only']
     save_dir = config['save_directory']
