@@ -26,7 +26,7 @@
 
 ## File Structure
 ```bash
-Working Directory'
+Working Directory
 ├── archive/
 ├── dataset/
 │	  ├── od_data/
