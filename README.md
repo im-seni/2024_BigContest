@@ -50,18 +50,27 @@ Working Directory'
 
 ## Data Pipeline
 ![1](https://github.com/user-attachments/assets/284206a8-ac55-4383-bc94-4fa630b3cffb)
+
 경로 생성을 위해 첫 단계로 행정동 기준의 출발지와 도착지 좌표를 확인합니다. 이를 위해 SGIS API를 사용하여 행정동 경계 좌표를 얻고, KIKmix_20230701.csv의 행정동 데이터를 매칭하여 레퍼런스 자료를 만듭니다. API와 호환되는 행정동 코드를 통해 경계 좌표를 추출하고, 최종 결과를 json 파일로 저장하여 이후 과정에서 참고 자료로 활용합니다.
+
 ![2](https://github.com/user-attachments/assets/83112eab-239c-44eb-b76d-1920cf4105b6)
 
 레퍼런스 자료가 완성되면 경로 생성을 본격적으로 시작할 수 있습니다. 먼저 router_config.yaml은 사용자 설정을 담은 파일이며, main.py는 이 설정 파일과 od_data, reference.json을 활용해 경로 생성 작업을 수행하는 실행 스크립트입니다. 메인 스크립트는 총 3가지 모드를 갖추고 있습니다. 첫 번째 모드 Coordinates Only는 주어진 출발·도착 행정동에 랜덤 좌표를 지정해 coordinates.json에 저장하고, 두 번째 모드 Routes Only는 coordinates.json을 기반으로 경로를 생성하여 routes.json에 저장합니다. 마지막으로 Fixed Origins는 사용자 지정 좌표를 입력으로 받아 fixed_routes.json에 경로를 저장하는 특별 모드입니다.
+
 ![3](https://github.com/user-attachments/assets/519971bb-8def-4bf7-90bd-f535fb1c1a35)
+
 Coordinates Only 모드는 od_data를 필터링하여 출발지와 도착지 좌표를 생성하고 저장하는 네 단계로 이루어져 있습니다. 먼저 사용자가 설정한 조건에 맞는 데이터를 필터링한 후, 출발지와 도착지 행정동 좌표를 랜덤 샘플링으로 생성합니다. 설정한 비율에 따라 도착지 좌표를 특정 위치로 고정하거나 랜덤하게 배정할 수 있으며, 최종 좌표 데이터를 저장합니다.
+
 ![4](https://github.com/user-attachments/assets/ab0303ef-42ec-45f8-981d-b51934fa0fd4)
 
 Routes Only 모드는 총 네 단계로 구성됩니다. 먼저 Coordinates Only 모드 결과를 불러오고, Open Route Service API를 사용해 출발-도착 좌표 간 경로를 생성합니다. 경로 연결이 어려운 경우에는 Route Snapping 기능으로 조정하며, 이동 수단도 지정할 수 있습니다. 마지막으로 에러 로그를 수집하고 생성된 경로를 저장합니다.
+
 ![5](https://github.com/user-attachments/assets/2d90e46c-50dd-43ef-95c3-122fa07f7e2e)
+
 Fixed Origins 모드는 총 네 단계로 구성됩니다. 미리 설정한 출발지와 도착지 좌표를 불러온 뒤, Open Route Service API로 경로를 생성하며, Routes Only 모드와 동일하게 Route Snapping을 적용합니다. 생성 과정에서 발생한 에러를 수집하고, 최종 경로를 저장합니다. 이후, 생성된 경로의 과밀 구간을 추출하고 시각화하는 단계가 남아있습니다.
+
 ![6](https://github.com/user-attachments/assets/c51c4529-42d1-47a5-ac5d-1215c3b8b2bb)
+
 경로 추출이 완료되면 교차 영역을 파악해야 하며, 이를 위해 경로 데이터를 Shapely의 LineString 객체로 변환합니다. 경로를 직선 단위로 분할하여 Segments 데이터프레임에 저장하고, od count 정보를 상속합니다. 이후, 중복 제거한 Unique Segments 데이터프레임과 Shapely의 STRtree 객체로 교차 작업을 효율화합니다. 겹치는 영역이 선인 경우만 교차로 인정하며, 결과는 교차 횟수를 담은 Results 데이터프레임에 저장됩니다.
 
 ## Router Configurations
