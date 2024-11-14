@@ -1,0 +1,37 @@
+## 모드 선택 옵션
+## [C], [coordinates_only: True,  fixed_origins: False]: 사용자 설정에 따라 출발지, 도착지 좌표 설정만 하고 싶을때 선택.
+## [R], [coordinates_only: False, fixed_origins: False]: 좌표는 이미 뽑아둔 상태에서 경로만 생성하고 싶을때 선택.
+## [F], [coordinates_only: False, fixed_origins: True ]: 출발지를 정해놓은 상태에서 경로를 생성하고 싶을때 선택.
+coordinates_only:   False
+fixed_origins_only: False
+
+## API 액세스 토큰 [CRF]
+SGIS_consumer_key: ''
+SGIS_consumer_secret: ''
+ors_token: ''
+
+## 파일 구조 옵션 [CRF]
+od_data_path: './dataset/od_data'                         ## od_data 디렉토리
+stay_data_path: './dataset/stay_data'                     ## stay_data 디렉토리
+dong_code_path: './dataset/data_info/reference.json'      ## 행정동 코드, 경계 조회를 위한 json 파일 경로
+save_directory: './results'                               ## 결과 저장용 디렉토리
+error_directory: './errors'                               ## 에러 케이스 저장용 디렉토리
+
+## 데이터 전처리 옵션 [CR]
+date: ''                                                  ## 검색 날짜 ('MMDD')
+destination: ''                                           ## 검색 목적지 도로명주소
+view_all_day: True                                        ## 하루종일 보기 옵션
+time: ''                                                  ## 특정 시간대만 보기 옵션 ('HH:MM')
+
+## 좌표 생성 옵션 [CR]
+probability: 0.8                                          ## 목적지 도착 확률 (0~1)
+
+## 경로생성 대상 데이터파일 지정 [R]
+coordinates_path: ''
+
+## 지정좌표 기반 경로생성 옵션 [F]
+fixed_origins:                                            ## 사용자 설정 출발지들의 경도, 위도를 담은 2차원 배열
+fixed_destination:                                        ## 사용자 설정 목적지의 경도, 위도를 담은 1차원 배열
+profile: 'driving-car'                                    ## 'driving-car', 'driving-hgv', 'cycling-regular'
+                                                          ## 'cycling-road', 'cycling-mountain', 'cycling-electric'
+                                                          ## 'foot-walking', 'foot-hiking', 'wheelchair'
