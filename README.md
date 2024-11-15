@@ -15,7 +15,7 @@
 📂 <b>EDA</b>
 - 진주남강유등축제, 인천 소래포구 축제 관련 OD, Stay 데이터 EDA 코드 및 결과 <br/>
 
-📂 <b>bike-station-analysis<b/>
+📂 <b>bike-station-analysis</b>
 - 자전거 대여소 최적 입지 선정을 위한 데이터 전처리 및 모델링 코드 <br/>
 
 📂 <b>parking-analysis</b>
